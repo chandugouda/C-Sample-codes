@@ -1,0 +1,141 @@
+C++ Notes: Classes, Objects, and Constructors
+
+1. What is a Class?
+A class is a user-defined blueprint or template that defines data members (attributes) and member functions (behaviors).
+
+Example:
+class Car {
+private:
+    string brand;
+    int year;
+public:
+    void setBrand(string b) { brand = b; }
+    string getBrand() { return brand; }
+};
+
+2. What is an Object?
+An object is an instance of a class. Memory is allocated only when an object is created.
+
+Example:
+Car myCar;                  // Object creation
+myCar.setBrand("Toyota");
+
+Multiple objects can be created from the same class, each having independent data.
+
+3. Functions Inside a Class (Member Functions)
+Member functions are functions defined inside the class that operate on the object's data.
+
+They can be defined inside the class or declared inside and defined outside using ::.
+
+Example:
+class Car {
+public:
+    void display() { cout << brand << endl; }  // Defined inside
+    void accelerate();                         // Declared
+};
+
+void Car::accelerate() { cout << "Accelerating..." << endl; }
+
+4. this Pointer
+The 'this' pointer is an implicit pointer in every non-static member function that points to the current object.
+
+Used to:
+- Resolve name conflicts between parameters and data members
+- Return the current object (*this) for chaining
+
+Example:
+void setValue(int value) {
+    this->value = value;   // Distinguishes member from parameter
+}
+
+Demo& chain() {
+    // some code
+    return *this;          // Allows obj.chain().anotherMethod();
+}
+
+5. Constructor
+A special member function called automatically when an object is created.
+- Same name as class
+- No return type
+- Used for initialization
+
+Syntax:
+ClassName() { /* initialization */ }
+
+6. Default Constructor
+A constructor with no parameters (or all parameters have default values).
+Called when object is created without arguments.
+
+Example:
+MyClass obj;   // Calls default constructor
+
+If you define any constructor, compiler won't provide default one unless you explicitly define it.
+
+7. Parameterized Constructor
+Constructor that accepts parameters to initialize members with specific values.
+
+Example:
+class Point {
+    int x, y;
+public:
+    Point(int a, int b) : x(a), y(b) {}   // Parameterized
+};
+
+Point p(10, 20);   // Calls parameterized constructor
+
+8. Copy Constructor
+Constructor that creates an object by copying another object of the same class.
+
+Syntax:
+ClassName(const ClassName& other);
+
+Called in cases like:
+MyClass obj2 = obj1;
+function(obj1);           // pass by value
+return obj1;              // return by value
+
+9. Default Copy Constructor
+Provided by compiler if no user-defined copy constructor exists.
+Performs shallow (member-wise) copy.
+
+Problem: For classes with pointers, it copies the pointer address, not the data → both objects point to same memory.
+
+10. Deep Copy
+When copying objects with dynamic memory, allocate new memory and copy the actual data.
+
+Required to avoid issues like double deletion or dangling pointers.
+
+Example (User-defined copy constructor for deep copy):
+class MyString {
+    char* data;
+public:
+    MyString(const MyString& other) {
+        data = new char[strlen(other.data) + 1];
+        strcpy(data, other.data);   // Deep copy
+    }
+    ~MyString() { delete[] data; }
+};
+
+11. Difference Between Copy Constructor and memcpy()
+
+Copy Constructor:
+- Performs member-wise initialization
+- Calls constructors for member objects
+- Handles polymorphism (virtual tables)
+- Safe for complex objects (strings, vectors, etc.)
+- Can be customized (e.g., for deep copy)
+
+memcpy():
+- Raw byte-by-byte memory copy
+- Very fast but dangerous for non-trivial objects
+- Does NOT call constructors/destructors
+- Leads to undefined behavior with pointers, vtables, resources
+- Only safe for POD (Plain Old Data) or trivial types
+
+Rule: Never use memcpy() to copy C++ objects with dynamic resources!
+
+Summary:
+- Always define copy constructor (and assignment operator) when class manages resources (Rule of Three/Five).
+- Prefer modern C++: use smart pointers (unique_ptr, shared_ptr) to avoid manual deep copying.
+
+Happy Learning! Practice by implementing each type of constructor.
