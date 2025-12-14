@@ -1,0 +1,71 @@
+//Problem Statement
+
+//You are developing a Sensor Initialization Module for an embedded system.
+
+//Based on a SensorType, the system should create and initialize the correct Sensor object.
+
+//Supported Sensors
+
+//Temperature Sensor
+
+//Pressure Sensor
+
+//Speed Sensor
+
+//Each sensor:
+
+//Has a different constructor behavior
+
+//Has an ID and range
+
+//Must print its configuration
+
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+
+using namespace std;
+enum SensorType{TEMP,PRESSURE,SPEED};
+class Sensor{
+    public:
+    int sensor_id;
+    string sensor_range;
+    
+    Sensor(int x,string y)
+    {
+        sensor_id=x;
+        sensor_range=y;
+    }
+    void printSensor()
+    {
+        cout<<"Sensor ID is : "<<sensor_id<<endl;
+        cout<<"Sensor Range is :"<<sensor_range<<endl;
+    }
+};
+Sensor createsensor(SensorType type){
+    if(type==TEMP){
+        return Sensor(1,"42 to 90");
+    }
+    else if(type==PRESSURE){
+        return Sensor(2," 20 to 190");
+    }
+    else{
+        return Sensor(3,"30 to 110");
+    }
+}
+int main()
+{
+    Sensor Temperature=createsensor(TEMP);
+    Temperature.printSensor();
+    Sensor Pressure = createsensor(PRESSURE);
+    Pressure.printSensor();
+    Sensor Speed = createsensor(SPEED);
+    Speed.printSensor();
+    return 0;
+}
