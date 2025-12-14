@@ -1,0 +1,276 @@
+# C++ OOP – Class, Object & Constructors
+
+This document contains **interview-ready questions and answers** covering **Class, Object, and Constructors**, with both **normal C++** and **embedded/automotive** perspectives.
+
+---
+
+## 1. Class & Object – Practice Q&A
+
+### Q1. What is the size of the following class?
+
+```cpp
+class A {
+    int a;
+    char b;
+};
+```
+
+**Answer:** `sizeof(A) = 8 bytes`
+
+**Explanation:**
+
+* `int a` → 4 bytes
+* `char b` → 1 byte
+* Padding → 3 bytes (for alignment)
+
+---
+
+### Q2. How many constructor calls?
+
+```cpp
+class A {
+public:
+    A() { cout << "A"; }
+};
+
+int main() {
+    A a1;
+    A a2(a1);
+}
+```
+
+**Answer:** 2 constructor calls
+
+**Explanation:**
+
+* `a1` → default constructor
+* `a2(a1)` → copy constructor (compiler-generated)
+* Output: `A`
+
+---
+
+### Q3. How many objects are created?
+
+```cpp
+class A {
+public:
+    A(int x) { cout << x; }
+};
+
+int main() {
+    A a = A(5);
+}
+```
+
+**Answer:** 1 object
+
+**Explanation:**
+
+* Guaranteed copy elision (C++17+)
+* Only one constructor call
+
+---
+
+### Q4. Is an object created?
+
+```cpp
+class A {
+public:
+    A() { cout << "A"; }
+};
+
+int main() {
+    A a();
+}
+```
+
+**Answer:** No
+
+**Explanation:**
+
+* This is a function declaration, not object creation
+* Known as **Most Vexing Parse**
+
+---
+
+### Q5. What is the value of `x`?
+
+```cpp
+class A {
+    int x;
+public:
+    A(int v) : x(v + 1) {}
+};
+
+A a(5);
+```
+
+**Answer:** `x = 6`
+
+---
+
+### Q6. Will this compile?
+
+```cpp
+class A {
+public:
+    explicit A(int x) {}
+};
+
+int main() {
+    A a = 10;
+}
+```
+
+**Answer:** ❌ Compile-time error
+
+**Explanation:**
+
+* `explicit` blocks implicit conversion
+* Correct usage: `A a(10);`
+
+---
+
+## 2. Constructors – Core Concepts Q&A
+
+### Q7. How many times is constructor called?
+
+```cpp
+class A {
+public:
+    A() { cout << "A"; }
+};
+
+int main() {
+    A a = A();
+}
+```
+
+**Answer:** 1 time
+
+**Explanation:**
+
+* Guaranteed copy elision
+
+---
+
+### Q8. Can `this` be used in static member function?
+
+**Answer:** No
+
+**Explanation:**
+
+* Static member functions are not tied to any object
+* Hence no `this` pointer
+
+---
+
+### Q9. Why member functions do not increase object size?
+
+**Answer:**
+
+* Member functions are stored once (class-level)
+* Objects store only data members
+* `this` pointer is passed at call time, not stored
+
+---
+
+## 3. Embedded / Automotive Specific Q&A
+
+### Q10. When is this constructor executed?
+
+```cpp
+class ECU {
+public:
+    ECU() { initCan(); }
+};
+
+ECU ecu;
+```
+
+**Answer:** Before `main()` execution
+
+**Why risky in embedded?**
+
+* Hardware/drivers may not be initialized
+* Initialization order across files is undefined
+* Can cause startup crashes
+
+---
+
+### Q11. Stack vs Heap object lifetime
+
+```cpp
+void func() {
+    ECU e1;
+    ECU* e2 = new ECU();
+}
+```
+
+**Answer:**
+
+* `e1` constructor → when `func()` starts
+* `e1` destructor → when `func()` ends
+* `e2` constructor → at `new`
+* `e2` destructor → only on `delete e2`
+
+---
+
+### Q12. Why does this fail?
+
+```cpp
+class Sensor {
+    const int id;
+public:
+    Sensor(int x) {
+        id = x;
+    }
+};
+```
+
+**Answer:** Compile-time error
+
+**Reason:**
+
+* `const` members must be initialized, not assigned
+
+**Fix:**
+
+```cpp
+Sensor(int x) : id(x) {}
+```
+
+---
+
+### Q13. Is this safe?
+
+```cpp
+class A {
+    int& r;
+public:
+    A(int x) : r(x) {}
+};
+```
+
+**Answer:** ❌ Unsafe
+
+**Reason:**
+
+* `x` is a local variable
+* Reference becomes dangling after constructor
+
+---
+
+## 4. Interview One-Liners (Memorize)
+
+* A class does not allocate memory; objects do
+* Static data members do not increase object size
+* `A a();` is a function declaration
+* Global constructors run before `main()`
+* Avoid heavy logic in constructors in embedded systems
+* `const` and reference members must use initializer list
+* Prefer `explicit` constructors in safety-critical code
+
+---
+
+**Status:** ✔️ Class, Object, and Constructors – COMPLETED
