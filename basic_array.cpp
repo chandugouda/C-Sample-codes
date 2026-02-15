@@ -317,4 +317,29 @@ int main() {
     return 0;
 }
 
+// subarry with k=3
+#include <iostream>
+using namespace std;
+int main() {
+    int a[]={2, 1, 5, 1, 3, 2, 8};
+    int k=3;
+    int size=sizeof(a)/sizeof(a[0]);
+    int window_sum=0;
+    int max_sum=0;
+    for(int i=0;i<k;i++){
+        window_sum +=a[i];
+    }
+    max_sum=window_sum;
+    for(int i=k;i<size;i++){
+        window_sum=window_sum +a[i];
+        window_sum=window_sum-a[i-k];
+        if(window_sum>max_sum){
+            max_sum=window_sum;
+        }
+    }
+    cout<<max_sum<<endl;
+    return 0;
+}
+
+
 
