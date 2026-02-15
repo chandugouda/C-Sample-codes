@@ -1,2 +1,2 @@
 # training
-Training
+C++ Sample codes
