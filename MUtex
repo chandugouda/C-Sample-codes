@@ -1,0 +1,36 @@
+#include <iostream>
+#include <mutex>
+using namespace std;
+
+class MyLockGuard {
+private:
+    mutex& mtx;
+
+public:
+    // Constructor → lock
+    MyLockGuard(mutex& m) : mtx(m) {
+        mtx.lock();
+        cout << "Locked\n";
+    }
+
+    // Destructor → unlock
+    ~MyLockGuard() {
+        mtx.unlock();
+        cout << "Unlocked\n";
+    }
+
+    // delete copy (important)
+    MyLockGuard(const MyLockGuard&) = delete;
+    MyLockGuard& operator=(const MyLockGuard&) = delete;
+};
+
+mutex m;
+
+int main() {
+    {
+        MyLockGuard lock(m);  // RAII
+        cout << "Critical section\n";
+    } // automatically unlocks here
+
+    return 0;
+}
